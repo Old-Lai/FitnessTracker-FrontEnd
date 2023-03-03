@@ -1,15 +1,14 @@
 import { Table, TableCell, TableContainer, TableHead, TableBody, TableRow, Paper, Grid } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useOutletContext } from "react-router"
-import { getPublicRoutine } from "../api/api"
+import { getMe, getUsersRoutine } from "../api/api"
 import { RoutinesRow } from "../components"
 
-import React from "react";
-
-const Routine = ()=>{
+const MyRoutine = () => {
     const { token } = useOutletContext()
-    const [routines, setRoutines] = useState([])
+    const [user, setUser] = useState({})
     const [isLoading, setIsLoading] = useState(false)
+    const [routines, setRoutines] = useState([])
 
     const [screenSize, getDimention] = useState({
         dynamicWidth: window.innerWidth,
@@ -25,12 +24,14 @@ const Routine = ()=>{
 
     useEffect(()=>{
         setIsLoading(true)
-        getPublicRoutine()
-        .then(response => {
-            setRoutines(response)
+        getMe({token})
+        .then(async response => {
+            setUser({id:response.id, username:response.username})
             setIsLoading(false)
+            
+            setRoutines(await getUsersRoutine({token: token, username: response.username}))
         })
-    },[])
+    },[token])
 
     useEffect(() => {
         window.addEventListener('resize', setDimention)
@@ -41,6 +42,8 @@ const Routine = ()=>{
 
     return(
         <div>
+            {isLoading && <h1>Loading....</h1>}
+            {/* {!isLoading && routines && <RoutinesRow routineList={routines}/>} */}
             <Grid
                     container
                     spacing={0}
@@ -49,8 +52,7 @@ const Routine = ()=>{
                     justifyContent="center"
                     style={{ minHeight: '80vh' }}
             >
-                {isLoading && <h1>Loading...</h1>}
-                {!isLoading && routines && <h2>Routines table</h2>}
+                {!isLoading && routines && <h2>{user.username}'s routine</h2>}
                 {!isLoading && routines && 
                     <Paper sx={{ width: screenSize.dynamicWidth *0.8, overflow: 'hidden' }}>
                         <TableContainer sx={{maxHeight:screenSize.dynamicHeight *0.8}}>
@@ -77,4 +79,4 @@ const Routine = ()=>{
     )
 }
 
-export default Routine
+export default MyRoutine

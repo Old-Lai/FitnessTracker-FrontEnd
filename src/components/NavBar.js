@@ -9,7 +9,7 @@ const NavBar = ({token, setToken}) => {
         <nav>
             <Breadcrumbs>
                 <Link to="/">Home</Link>
-                {token && <Link to="profile">Profile</Link>}
+                {token && <Link to="myRoutines">My Routines</Link>}
                 <Link to="routine">Routine</Link>
                 <Link to="activity">Activity</Link>
                 {token && <Button id="logout" onClick={e=>logoutUser(e)}>Logout</Button>}

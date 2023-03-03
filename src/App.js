@@ -4,7 +4,7 @@ import{
   NotFound,
   Login,
   Register,
-  Profile,
+  MyRoutine,
   Home,
   Routine,
   Activity
@@ -26,8 +26,8 @@ const router = createBrowserRouter([
         element: <Login />
       },
       {
-        path: "profile",
-        element: <Profile />
+        path: "myRoutine",
+        element: <MyRoutine />
       },
       {
         path: "/",
