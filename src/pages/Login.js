@@ -11,7 +11,6 @@ const Login = () => {
         e.preventDefault()
         setMessage('Loading...')
         const response = await loginUser({username, password})
-        console.log(response)
         setMessage(response.message)
         if(response.token){
             localStorage.setItem('Token', response.token)

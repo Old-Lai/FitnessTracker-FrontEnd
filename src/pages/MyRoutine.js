@@ -1,14 +1,17 @@
-import { Table, TableCell, TableContainer, TableHead, TableBody, TableRow, Paper, Grid } from "@mui/material"
+import { Table, TableCell, TableContainer, TableHead, TableBody, TableRow, Paper, Grid, IconButton } from "@mui/material"
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useEffect, useState } from "react"
 import { useOutletContext } from "react-router"
 import { getMe, getUsersRoutine } from "../api/api"
 import { RoutinesRow } from "../components"
+import { CreateRoutineRow } from "../components";
 
 const MyRoutine = () => {
     const { token } = useOutletContext()
     const [user, setUser] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [routines, setRoutines] = useState([])
+    const [createMode, setCreateMode] = useState(false)
 
     const [screenSize, getDimention] = useState({
         dynamicWidth: window.innerWidth,
@@ -22,15 +25,19 @@ const MyRoutine = () => {
         })
     }
 
-    useEffect(()=>{
-        setIsLoading(true)
+    function reloadRoutine() {
         getMe({token})
         .then(async response => {
             setUser({id:response.id, username:response.username})
             setIsLoading(false)
-            
-            setRoutines(await getUsersRoutine({token: token, username: response.username}))
+            const routine = await getUsersRoutine({token: token, username: response.username})
+            setRoutines(routine.reverse())
         })
+    }
+
+    useEffect(()=>{
+        setIsLoading(true)
+        reloadRoutine()
     },[token])
 
     useEffect(() => {
@@ -43,7 +50,6 @@ const MyRoutine = () => {
     return(
         <div>
             {isLoading && <h1>Loading....</h1>}
-            {/* {!isLoading && routines && <RoutinesRow routineList={routines}/>} */}
             <Grid
                     container
                     spacing={0}
@@ -59,15 +65,21 @@ const MyRoutine = () => {
                             <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell />
+                                        <TableCell style={{width: '80px'}} align="center">
+                                            <IconButton onClick={() => setCreateMode(true)}>
+                                                <AddBoxIcon />
+                                            </IconButton>
+                                        </TableCell>
                                         <TableCell>Creator Name</TableCell>
-                                        <TableCell align="left">Routine Name</TableCell>
+                                        <TableCell align="left" >Routine Name</TableCell>
                                         <TableCell align="left">Goal</TableCell>
+                                        <TableCell align="center">Is Public</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+                                    {createMode && <CreateRoutineRow token={token} setCreateMode={setCreateMode} reloadRoutine={reloadRoutine} user={user}/>}
                                     {routines.map(routine => {
-                                        return <RoutinesRow routine={routine}/>
+                                        return <RoutinesRow routine={routine} atMyProfile={true} token={token} reloadRoutine={reloadRoutine} key={routine.id}/>
                                     })}
                                 </TableBody>
                             </Table>

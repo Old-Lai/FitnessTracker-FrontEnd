@@ -1,3 +1,6 @@
 export { default as NavBar } from "./NavBar"
 export { default as RoutinesRow } from "./RoutinesRow"
 export { default as ActivitiesRow } from "./ActivitiesRow"
+export { default as CreateActivityRow } from "./CreateActivityRow"
+export { default as CreateRoutineRow } from "./CreateRoutineRow"
+export { default as RoutineActivityTable } from "./RoutineActivityTable"

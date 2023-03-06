@@ -7,9 +7,9 @@ import { RoutinesRow } from "../components"
 import React from "react";
 
 const Routine = ()=>{
-    const { token } = useOutletContext()
     const [routines, setRoutines] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const {token} = useOutletContext()
 
     const [screenSize, getDimention] = useState({
         dynamicWidth: window.innerWidth,
@@ -23,13 +23,17 @@ const Routine = ()=>{
         })
     }
 
-    useEffect(()=>{
-        setIsLoading(true)
+    function reloadRoutine(){
         getPublicRoutine()
         .then(response => {
-            setRoutines(response)
+            setRoutines(response.reverse())
             setIsLoading(false)
         })
+    }
+
+    useEffect(()=>{
+        setIsLoading(true)
+        reloadRoutine()
     },[])
 
     useEffect(() => {
@@ -65,7 +69,7 @@ const Routine = ()=>{
                                 </TableHead>
                                 <TableBody>
                                     {routines.map(routine => {
-                                        return <RoutinesRow routine={routine}/>
+                                        return <RoutinesRow routine={routine} reloadRoutine={reloadRoutine} token={token} key={routine.id}/>
                                     })}
                                 </TableBody>
                             </Table>

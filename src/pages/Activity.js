@@ -2,11 +2,14 @@ import { Table, TableCell, TableContainer, TableHead, TableBody, TableRow, Paper
 import { useEffect, useState } from "react"
 import { getListOfActivities } from "../api/api"
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { ActivitiesRow } from "../components";
+import { CreateActivityRow } from "../components";
+import { useOutletContext } from "react-router"
+
+
 
 const Activity = () => {
+    const { token } = useOutletContext()
     const [activities, setActivities] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [createMode, setCreateMode] = useState(false)
@@ -23,14 +26,17 @@ const Activity = () => {
         })
     }
 
-    useEffect(()=>{
-        setIsLoading(true)
+    function reloadActivity(){
         getListOfActivities()
         .then( response => {
-            setActivities(response)
+            setActivities(response.reverse())
             setIsLoading(false)
-            console.log(response)
         })
+    }
+
+    useEffect(()=>{
+        setIsLoading(true)
+        reloadActivity()
     },[])
 
     useEffect(() => {
@@ -39,14 +45,6 @@ const Activity = () => {
             window.removeEventListener('resize', setDimention)
         })
     }, [screenSize])
-
-    function editActivity(activityId){
-
-    }
-
-    function deleteActivity(activityId){
-
-    }
 
     return(
         <div>
@@ -66,10 +64,8 @@ const Activity = () => {
                             <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>
-                                            <IconButton
-                                                onClick={() => console.log("add")}
-                                            >
+                                        <TableCell style={{width: '80px'}} align="center">
+                                            <IconButton onClick={() => setCreateMode(true)}>
                                                 <AddBoxIcon />
                                             </IconButton>
                                         </TableCell>
@@ -78,9 +74,10 @@ const Activity = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+                                    {createMode && <CreateActivityRow token={token} reloadActivity={reloadActivity} setCreateMode={setCreateMode}/>}
                                     {activities.map(activity => {
                                         return(
-                                            <ActivitiesRow activity={activity}/>
+                                            <ActivitiesRow token={token} activity={activity} reloadActivity={reloadActivity}key={activity.id}/>
                                         )
                                     })}
                                 </TableBody>

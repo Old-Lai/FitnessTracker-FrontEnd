@@ -201,7 +201,7 @@ export async function createRoutine({token, name, goal, isPublic}){
     }
 }
 
-export async function updateRoutine({token, routineId, name, goal}){
+export async function updateRoutine({token, routineId, name, goal, isPublic}){
     let Authorization = ''
     if(token) Authorization = `Bearer ${token}`
     try{
@@ -213,7 +213,8 @@ export async function updateRoutine({token, routineId, name, goal}){
             },
             body: JSON.stringify({
                 name,
-                goal
+                goal,
+                isPublic
             })
         })
 
@@ -247,8 +248,11 @@ export async function removeRoutine({token, routineId}){
 
 export async function attachActivityToRoutine({routineId, activityId, count, duration}){
     try{
-        const response = await fetch(`${API_URL}routine/${routineId}/activities`, {
+        const response = await fetch(`${API_URL}routines/${routineId}/activities`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 activityId,
                 count,
@@ -264,10 +268,16 @@ export async function attachActivityToRoutine({routineId, activityId, count, dur
     }
 }
 
-export async function updateRoutineActivity({routineActivityId, count, duration}){
+export async function updateRoutineActivity({token, routineActivityId, count, duration}){
+    let Authorization = ''
+    if(token) Authorization = `Bearer ${token}`
     try{
-        const response = await fetch(`${API_URL}api/routine_activities/${routineActivityId}`, {
+        const response = await fetch(`${API_URL}routine_activities/${routineActivityId}`, {
             method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization
+            },
             body: JSON.stringify({
                 count,
                 duration
@@ -286,7 +296,7 @@ export async function removeRoutineActivity({token, routineActivityId}){
     let Authorization = ''
     if(token) Authorization = `Bearer ${token}`
     try{
-        const response = await fetch(`${API_URL}api/routine_activities/${routineActivityId}`, {
+        const response = await fetch(`${API_URL}routine_activities/${routineActivityId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
