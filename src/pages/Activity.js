@@ -47,46 +47,47 @@ const Activity = () => {
     }, [screenSize])
 
     return(
-        <div>
-            <Grid
-                    container
-                    spacing={0}
-                    direction="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    style={{ minHeight: '80vh' }}
-            >
-                {isLoading && <h1>Loading...</h1>}
-                {!isLoading && activities && <h2>Activities table</h2>}
-                {!isLoading && activities && 
-                    <Paper sx={{ width: screenSize.dynamicWidth *0.8, overflow: 'hidden' }}>
-                        <TableContainer sx={{maxHeight:screenSize.dynamicHeight *0.8}}>
-                            <Table stickyHeader aria-label="sticky table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell style={{width: '80px'}} align="center">
-                                            <IconButton onClick={() => setCreateMode(true)}>
-                                                <AddBoxIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                        <TableCell>Activity Name</TableCell>
-                                        <TableCell align="left">Description</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {createMode && <CreateActivityRow token={token} reloadActivity={reloadActivity} setCreateMode={setCreateMode}/>}
-                                    {activities.map(activity => {
-                                        return(
-                                            <ActivitiesRow token={token} activity={activity} reloadActivity={reloadActivity}key={activity.id}/>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                }
-            </Grid>
-        </div>
+        <Grid
+                container
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+                style={{ minHeight: '80vh' }}
+        >
+            {isLoading && <h1>Loading...</h1>}
+            {!isLoading && activities && <h2>Activities table</h2>}
+            {!isLoading && activities && 
+                <Paper sx={{ width: screenSize.dynamicWidth *0.8, overflow: 'hidden' }}>
+                    <TableContainer sx={{maxHeight:screenSize.dynamicHeight *0.8}}>
+                        <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    {token ? <TableCell style={{width: '80px'}} align="center">
+                                                <IconButton onClick={() => setCreateMode(true)}>
+                                                    <AddBoxIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                            :
+                                            <TableCell />
+                                    }
+                                    <TableCell>Activity Name</TableCell>
+                                    <TableCell align="left">Description</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {createMode && <CreateActivityRow token={token} reloadActivity={reloadActivity} setCreateMode={setCreateMode}/>}
+                                {activities.map(activity => {
+                                    return(
+                                        <ActivitiesRow token={token} activity={activity} reloadActivity={reloadActivity}key={activity.id}/>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+            }
+        </Grid>
     )
 }
 

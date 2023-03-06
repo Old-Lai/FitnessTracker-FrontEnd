@@ -15,7 +15,7 @@ const RoutineActivityRow = ({activity, token, reloadRoutine, atMyProfile}) => {
 
     return(
         <TableRow key={activity.id}>
-            {atMyProfile ?
+            {atMyProfile &&
                 <TableCell>
                     {!editMode &&
                         <React.Fragment>
@@ -61,8 +61,6 @@ const RoutineActivityRow = ({activity, token, reloadRoutine, atMyProfile}) => {
                         </React.Fragment>
                     }
                 </TableCell>
-                :
-                <TableCell />
             }
             <TableCell>
                 {activity.name}
